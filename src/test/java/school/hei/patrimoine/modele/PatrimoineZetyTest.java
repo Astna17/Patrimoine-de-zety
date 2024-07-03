@@ -222,4 +222,68 @@ public class PatrimoineZetyTest {
 
         assertEquals(LocalDate.of(2024, SEPTEMBER, 21), dateEpuisement);
     }
+    @Test
+    void valeur_Patrimoine_Au_14Fevrier2025() {
+        Personne zety = new Personne("Zety");
+        LocalDate au3jul24 = LocalDate.of(2024, 7, 3);
+
+        Materiel ordinateur = new Materiel(
+                "Ordinateur",
+                au3jul24,
+                1_200_000,
+                au3jul24,
+                -0.10);
+
+        Materiel vetements = new Materiel(
+                "Vêtements",
+                au3jul24,
+                1_500_000,
+                au3jul24,
+                -0.50);
+
+        Argent argentEspeces = new Argent(
+                "Espèces",
+                au3jul24,
+                800_000);
+
+        LocalDate debutFraisScolarite = LocalDate.of(2023, 11, 27);
+        LocalDate finFraisScolarite = LocalDate.of(2024, 8, 27);
+        FluxArgent fraisScolarite = new FluxArgent(
+                "Frais de scolarité",
+                argentEspeces,
+                debutFraisScolarite,
+                finFraisScolarite,
+                200_000,
+                27);
+
+        Argent compteBancaire = new Argent(
+                "Compte Bancaire",
+                au3jul24,
+                100_000);
+
+        LocalDate debutCompteBancaire = LocalDate.of(2024, 7, 25);
+        FluxArgent fraisCompteBancaire = new FluxArgent(
+                "Frais de tenue de compte",
+                compteBancaire,
+                debutCompteBancaire,
+                LocalDate.MAX,
+                -20_000,
+                25);
+
+        argentEspeces.addFinancés(fraisScolarite);
+        compteBancaire.addFinancés(fraisCompteBancaire);
+
+        Patrimoine patrimoineAu14Fevrier2025 = new Patrimoine(
+                "Patrimoine de Zety au 14 février 2025",
+                new Personne("Zety"),
+                LocalDate.of(2025, 2, 14),
+                Set.of(ordinateur, vetements, argentEspeces, fraisScolarite, compteBancaire, fraisCompteBancaire)
+        );
+
+        Dette detteAllemagne = new Dette("Dette en Allemagne", LocalDate.of(2025, 2, 15), -7000);
+
+        patrimoineAu14Fevrier2025 = patrimoineAu14Fevrier2025.ajouterPossession(detteAllemagne);
+
+        assertEquals(3593000.0, patrimoineAu14Fevrier2025.getValeurComptable());
+    }
 }
